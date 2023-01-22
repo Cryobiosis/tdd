@@ -102,8 +102,7 @@ function createApp(database) {
         }
       if (
         date.getDate() === holiday.getDate()
-      ) {
-      }
+      ) {      }
     }
     return false;
   }
