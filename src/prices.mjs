@@ -81,7 +81,6 @@ function createApp(database) {
       reduction = 35;
     }
     if (date && isMonday(date, date2) && !isHoliday(date, date2)) {
-      reduction = 35;
     }
     return reduction;
   }
