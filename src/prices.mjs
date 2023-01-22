@@ -21,7 +21,7 @@ function createApp(database) {
     // parallel change
     const date2 = parseDate2(req.query.date);
     const date = parseDate(req.query.date);
-    const cost = calculateCost(age, type, date, baseCost, date2);
+    const cost = calculateCost(age, type, date2, baseCost, date2);
     res.json({ cost });
   });
 
