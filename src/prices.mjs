@@ -18,24 +18,23 @@ function createApp(database) {
     const age = req.query.age;
     const type = req.query.type;
     const baseCost = database.findBasePriceByType(type).cost;
-    const date = null; // parseDate(req.query.date);
-    const date2 = parseDate2(req.query.date);
-    const cost = calculateCost(age, type, date, baseCost, date2);
+    const date = parseDate(req.query.date);
+    const cost = calculateCost(age, type, date, baseCost, date);
     res.json({ cost });
   });
 
-  function parseDate2(dateString) {
+  function parseDate(dateString) {
     if (dateString) {
       const date = Temporal.PlainDate.from(dateString);
       return date;
     }
   }
 
-  function calculateCost(age, type, date, baseCost, date2) {
+  function calculateCost(age, type, date, baseCost) {
     if (type === "night") {
       return calculateCostForNightTicket(age, baseCost);
     } else {
-      return calculateCostForDayTicket(age, date, baseCost, date2);
+      return calculateCostForDayTicket(age, date, baseCost);
     }
   }
 
@@ -52,8 +51,8 @@ function createApp(database) {
     return baseCost;
   }
 
-  function calculateCostForDayTicket(age, date, baseCost, date2) {
-    let reduction = calculateReduction(date, date2);
+  function calculateCostForDayTicket(age, date, baseCost) {
+    let reduction = calculateReduction(date);
     if (age === undefined) {
       return Math.ceil(baseCost * (1 - reduction / 100));
     }
@@ -69,29 +68,28 @@ function createApp(database) {
     return Math.ceil(baseCost * (1 - reduction / 100));
   }
 
-  function calculateReduction(date, date2) {
+  function calculateReduction(date) {
     let reduction = 0;
-    if (date2 && isMonday(date, date2) && !isHoliday(date, date2)) {
+    if (date && isMonday(date, date) && !isHoliday(date)) {
       reduction = 35;
     }
     return reduction;
   }
 
-  function isMonday(date, date2) {
-    return date2.dayOfWeek === 1;
+  function isMonday(date) {
+    return date.dayOfWeek === 1;
   }
 
-  function isHoliday(date, date2) {
+  function isHoliday(date) {
     const holidays = database.getHolidays();
     for (let row of holidays) {
-      let holiday = new Date(row.holiday);
-      let holiday2 = Temporal.PlainDate.from(row.holiday);
+      let holiday = Temporal.PlainDate.from(row.holiday);
 
       if (
-        date2 &&
-        date2.year === holiday2.year &&
-        date2.month === holiday2.month &&
-        date2.day === holiday2.day
+        date &&
+        date.year === holiday.year &&
+        date.month === holiday.month &&
+        date.day === holiday.day
       ) {
         return true;
       }
