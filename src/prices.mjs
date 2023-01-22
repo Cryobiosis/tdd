@@ -75,30 +75,19 @@ function createApp(database) {
     return reduction;
   }
 
-  function convert(date) {
-    return Temporal.PlainDate.from(date.toISOString().split('T')[0]);
-  }
-
   function isMonday(date) {
-    // Conversio propagation
-    // console.log(date);
-    // console.log(convert(date));
-    return convert(date).dayOfWeek === 1;
-    // return date.getDay() === 1;
+    return date.getDay() === 1;
   }
 
   function isHoliday(date) {
     const holidays = database.getHolidays();
-    date = convert(date);
-
     for (let row of holidays) {
-      let holiday = convert(new Date(row.holiday));
-
+      let holiday = new Date(row.holiday);
       if (
         date &&
-        date.year === holiday.year &&
-        date.month === holiday.month &&
-        date.day === holiday.day
+        date.getFullYear() === holiday.getFullYear() &&
+        date.getMonth() === holiday.getMonth() &&
+        date.getDate() === holiday.getDate()
       ) {
         return true;
       }
