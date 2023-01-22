@@ -75,8 +75,16 @@ function createApp(database) {
     return reduction;
   }
 
+  function convert(date) {
+    return Temporal.PlainDate.from(date.toISOString().split('T')[0]);
+  }
+
   function isMonday(date) {
-    return date.getDay() === 1;
+    // Conversio propagation
+    // console.log(date);
+    // console.log(convert(date));
+    return convert(date).dayOfWeek === 1;
+    // return date.getDay() === 1;
   }
 
   function isHoliday(date) {
