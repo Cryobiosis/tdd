@@ -19,12 +19,12 @@ function createApp(database) {
     const type = req.query.type;
     const baseCost = database.findBasePriceByType(type).cost;
     // parallel change
-    const date2 = parseDate2(req.query.date);
+    const date2 = parseDate(req.query.date);
     const cost = calculateCost(age, type, date2, baseCost);
     res.json({ cost });
   });
 
-  function parseDate2(dateString) {
+  function parseDate(dateString) {
     if (dateString) { 
       return Temporal.PlainDate.from(dateString); 
     }
