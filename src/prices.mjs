@@ -18,7 +18,7 @@ function createApp(database) {
     const age = req.query.age;
     const type = req.query.type;
     const baseCost = database.findBasePriceByType(type).cost;
-    const date = parseDate(req.query.date);
+    const date = null; // parseDate(req.query.date);
     const date2 = parseDate2(req.query.date);
     const cost = calculateCost(age, type, date, baseCost, date2);
     res.json({ cost });
@@ -28,11 +28,6 @@ function createApp(database) {
     if (dateString) {
       const date = Temporal.PlainDate.from(dateString);
       return date;
-    }
-  }
-  function parseDate(dateString) {
-    if (dateString) {
-     return new Date(dateString);
     }
   }
 
@@ -76,36 +71,27 @@ function createApp(database) {
 
   function calculateReduction(date, date2) {
     let reduction = 0;
-    if (date && isMonday(date, date2) && !isHoliday(date, date2)) {
+    if (date2 && isMonday(date, date2) && !isHoliday(date, date2)) {
       reduction = 35;
     }
     return reduction;
   }
 
   function isMonday(date, date2) {
-    if (date2) return date2.dayOfWeek === 1;
-    return date.getDay() === 1;
+    return date2.dayOfWeek === 1;
   }
 
   function isHoliday(date, date2) {
     const holidays = database.getHolidays();
     for (let row of holidays) {
       let holiday = new Date(row.holiday);
-      if (
-        date2 &&
-        date2.year === holiday.year &&
-        date2.month === holiday.month &&
-        date2.day === holiday.day
-      ) {
-        return true;
-      }
- 
+      let holiday2 = Temporal.PlainDate.from(row.holiday);
 
       if (
-        date &&
-        date.getFullYear() === holiday.getFullYear() &&
-        date.getMonth() === holiday.getMonth() &&
-        date.getDate() === holiday.getDate()
+        date2 &&
+        date2.year === holiday2.year &&
+        date2.month === holiday2.month &&
+        date2.day === holiday2.day
       ) {
         return true;
       }
