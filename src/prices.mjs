@@ -25,6 +25,7 @@ function createApp(database) {
   });
 
   function parseDate2(dateString) {
+    if (dateString) {}
   }
 
   function parseDate(dateString) {
